@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "streetsidesoftware.code-spell-checker",
+    "oderwat.indent-rainbow",
+    "bierner.markdown-footnotes",
+    "yahyabatulu.vscode-markdown-alert",
+    "bierner.markdown-preview-github-styles",
+    "davidanson.vscode-markdownlint",
+    "esbenp.prettier-vscode",
+    "shardulm94.trailing-spaces",
+    "kddejong.vscode-cfn-lint"
+  ]
+}
