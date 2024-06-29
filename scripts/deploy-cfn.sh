@@ -81,3 +81,16 @@ elif [[ -z "$TEMPLATE_NAME" ]]; then
     show_usage
     exit 1
 fi
+
+TEMPLATE_FILE="./cfn/templates/${TEMPLATE_NAME}.yml"
+PARAMETER_FILE="./cfn/parameters/${TEMPLATE_NAME}.json"
+
+if [[ ! -f "$TEMPLATE_FILE" ]]; then
+    echo "Template file does not exist: $TEMPLATE_FILE"
+    exit 1
+fi
+
+if [[ ! -f "$PARAMETER_FILE" ]]; then
+    echo "Parameter file does not exist: $PARAMETER_FILE"
+    exit 1
+fi
