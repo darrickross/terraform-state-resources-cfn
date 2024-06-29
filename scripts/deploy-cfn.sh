@@ -15,13 +15,20 @@
 #       -p|--profile   : The AWS profile to use
 #       -t|--template  : The name of the CloudFormation template (without extension) located in ./cfn/templates/
 #   Optional
+#       -h|--help       : (Optional) Show usage
 #       -r|--region    : The AWS region to deploy the stack in
 #       -y|--assume-yes: (Optional) Automatically proceed without prompting for approval
 #       -d|--dry-run   : (Optional) Perform a dry run without actual deployment
 
 # Function to show script usage
 show_usage() {
-    echo "Usage: $0 -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run]"
+    echo "Usage: $0 -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run] [-h/--help]"
+}
+
+show_full_usage() {
+    cat <<HEREDOC_FULL_USAGE
+TODO
+HEREDOC_FULL_USAGE
 }
 
 # Default values
@@ -43,6 +50,10 @@ while [[ "$#" -gt 0 ]]; do
     # Optional
     -d | --dry-run)
         DRY_RUN=1
+        ;;
+    -h | --help)
+        show_full_usage
+        exit 0
         ;;
     -r | --region)
         REGION="$2"
