@@ -12,13 +12,13 @@
 
 # Parameters:
 #   Required
-#       -p|--profile   : The AWS profile to use
-#       -t|--template  : The name of the CloudFormation template (without extension) located in ./cfn/templates/
+#       -p|--profile    : The AWS profile to use
+#       -t|--template   : The name of the CloudFormation template (without extension) located in ./cfn/templates/
 #   Optional
+#       -d|--dry-run    : (Optional) Perform a dry run without actual deployment
 #       -h|--help       : (Optional) Show usage
-#       -r|--region    : The AWS region to deploy the stack in
-#       -y|--assume-yes: (Optional) Automatically proceed without prompting for approval
-#       -d|--dry-run   : (Optional) Perform a dry run without actual deployment
+#       -r|--region     : (Optional) The AWS region to deploy the stack in
+#       -y|--assume-yes : (Optional) Automatically proceed without prompting for approval
 
 # Function to show script usage
 show_usage() {
