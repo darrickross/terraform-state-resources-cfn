@@ -8,6 +8,8 @@
     "davidanson.vscode-markdownlint",
     "esbenp.prettier-vscode",
     "shardulm94.trailing-spaces",
-    "kddejong.vscode-cfn-lint"
+    "kddejong.vscode-cfn-lint",
+    "foxundermoon.shell-format",
+    "timonwong.shellcheck"
   ]
 }
