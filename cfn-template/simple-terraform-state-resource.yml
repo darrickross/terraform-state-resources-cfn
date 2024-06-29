@@ -23,6 +23,11 @@ Resources:
   TerraformStateBucket:
     Type: AWS::S3::Bucket
     Properties:
+      BucketEncryption:
+        # Default Server Side Encryption
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: "AES256"
       VersioningConfiguration:
         Status: "Enabled"
       PublicAccessBlockConfiguration:
@@ -74,6 +79,8 @@ Resources:
       KeySchema:
         - AttributeName: LockID
           KeyType: HASH
+      SSESpecification:
+        SSEEnabled: false
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
