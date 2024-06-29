@@ -22,7 +22,6 @@
 # Function to show script usage
 show_usage() {
     echo "Usage: $0 -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run]"
-    exit 1
 }
 
 # Default values
@@ -54,6 +53,7 @@ while [[ "$#" -gt 0 ]]; do
         ;;
     *)
         show_usage
+        exit 1
         ;;
     esac
     shift
@@ -62,5 +62,6 @@ done
 # Check for mandatory arguments
 if [[ -z "$AWS_PROFILE" || -z "$REGION" || -z "$TEMPLATE_NAME" ]]; then
     show_usage
+    exit 1
 fi
 
