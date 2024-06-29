@@ -45,9 +45,15 @@ while [[ "$#" -gt 0 ]]; do
         shift
         ;;
     # Optional
-    -d | --dry-run) DRY_RUN=1 ;;
-    -y | --assume-yes) ASSUME_YES=1 ;;
-    *) show_usage ;;
+    -d | --dry-run)
+        DRY_RUN=1
+        ;;
+    -y | --assume-yes)
+        ASSUME_YES=1
+        ;;
+    *)
+        show_usage
+        ;;
     esac
     shift
 done
