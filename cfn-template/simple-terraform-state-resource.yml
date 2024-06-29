@@ -47,14 +47,14 @@ Resources:
             Condition:
               Bool:
                 "aws:SecureTransport": "false"
-          - Sid: "Allow to view "
+          - Sid: "Allow list operation on the bucket"
             Effect: Allow
             Principal: "*"
             Action:
               - "s3:ListBucket"
             Resource:
               - !Sub arn:${AWS::Partition}:s3:::${TerraformStateBucket}
-          - Sid: "Deny any non-encrypted operations"
+          - Sid: "Allow put/get operation on things in the bucket"
             Effect: Allow
             Principal: "*"
             Action:
