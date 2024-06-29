@@ -13,31 +13,28 @@
 # Parameters:
 #   Required
 #       -p|--profile   : The AWS profile to use
-#       -r|--region    : The AWS region to deploy the stack in
 #       -t|--template  : The name of the CloudFormation template (without extension) located in ./cfn/templates/
 #   Optional
+#       -r|--region    : The AWS region to deploy the stack in
 #       -y|--assume-yes: (Optional) Automatically proceed without prompting for approval
 #       -d|--dry-run   : (Optional) Perform a dry run without actual deployment
 
 # Function to show script usage
 show_usage() {
-    echo "Usage: $0 -p|--profile AWS_PROFILE -r|--region REGION -t|--template TEMPLATE_NAME [-y|--assume-yes] [-d|--dry-run]"
+    echo "Usage: $0 -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run]"
     exit 1
 }
 
 # Default values
 ASSUME_YES=0
 DRY_RUN=0
+REGION="us-east-1"
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
     # Required
     -p | --profile)
         AWS_PROFILE="$2"
-        shift
-        ;;
-    -r | --region)
-        REGION="$2"
         shift
         ;;
     -t | --template)
@@ -47,6 +44,10 @@ while [[ "$#" -gt 0 ]]; do
     # Optional
     -d | --dry-run)
         DRY_RUN=1
+        ;;
+    -r | --region)
+        REGION="$2"
+        shift
         ;;
     -y | --assume-yes)
         ASSUME_YES=1
