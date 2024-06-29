@@ -63,6 +63,7 @@ while [[ "$#" -gt 0 ]]; do
         ASSUME_YES=1
         ;;
     *)
+        echo "Unknown parameter '$1'"
         show_usage
         exit 1
         ;;
@@ -71,8 +72,12 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Check for mandatory arguments
-if [[ -z "$AWS_PROFILE" || -z "$REGION" || -z "$TEMPLATE_NAME" ]]; then
+if [[ -z "$AWS_PROFILE" ]]; then
+    echo "Missing AWS Profile!"
+    show_usage
+    exit 1
+elif [[ -z "$TEMPLATE_NAME" ]]; then
+    echo "Missing CloudFormation Template file!"
     show_usage
     exit 1
 fi
-
