@@ -93,6 +93,7 @@ elif [[ -z "$TEMPLATE_NAME" ]]; then
     exit 1
 fi
 
+STACK_NAME="$TEMPLATE_NAME"
 TEMPLATE_FILE="./cfn/templates/${TEMPLATE_NAME}.yml"
 PARAMETER_FILE="./cfn/parameters/${TEMPLATE_NAME}.json"
 
@@ -192,7 +193,7 @@ deploy_template() {
     cmd_deploy_cfn=(
         "aws" "cloudformation" "deploy"
         "--template-file" "$TEMPLATE_FILE"
-        "--stack-name" "$TEMPLATE_NAME"
+        "--stack-name" "$STACK_NAME"
         "--profile" "$AWS_PROFILE"
         "--region" "$REGION"
         "--parameter-overrides" "file://$PARAMETER_FILE"
