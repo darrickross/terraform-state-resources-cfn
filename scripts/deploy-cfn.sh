@@ -2,7 +2,7 @@
 
 # The below functions capture the necessary overview of what this script does in functionsl help comments
 
-show_full_usage() {
+show_help_docs() {
     cat <<HEREDOC_FULL_USAGE
 This script automates the deployment of AWS CloudFormation templates by performing the following steps:
     1. Validate the CloudFormation template
@@ -56,7 +56,7 @@ while [[ "$#" -gt 0 ]]; do
         DRY_RUN=1
         ;;
     -h | --help)
-        show_full_usage
+        show_help_docs
         exit 0
         ;;
     -r | --region)
