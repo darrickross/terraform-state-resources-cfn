@@ -25,7 +25,8 @@
 
 # Function to show script usage
 show_usage() {
-    echo "Usage: $0 -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run] [-h/--help]"
+    echo "Usage:"
+    echo "$0 -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run] [-h|--help]"
 }
 
 show_full_usage() {
