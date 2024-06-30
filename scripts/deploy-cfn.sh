@@ -71,8 +71,8 @@ while [[ "$#" -gt 0 ]]; do
         ASSUME_YES=1
         ;;
     *)
-        echo "Unknown parameter '$1'"
-        show_usage
+        echo "$0: invalid option -- '$1'"
+        echo "Try '$0 --help' for more information."
         exit 1
         ;;
     esac
