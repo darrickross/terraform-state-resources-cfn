@@ -137,7 +137,7 @@ validate_aws_profile() {
 
 validate_template() {
     echo "Validating CloudFormation template..."
-    aws cloudformation validate-template --template-body file://"$TEMPLATE_FILE" --profile "$AWS_PROFILE" --region "$REGION"
+    aws cloudformation validate-template --template-body file://"$TEMPLATE_FILE" --profile "$AWS_PROFILE" --region "$REGION" &>/dev/null
     if [[ $? -ne 0 ]]; then
         echo "Template validation failed."
         exit 1
