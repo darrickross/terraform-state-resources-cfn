@@ -98,16 +98,20 @@ fi
 #   Variables
 # ==============================================================================
 
+ARGUMENT_REGION=()
+ARGUMENT_PROFILE=()
+ARGUMENT_PARAMETER_OVERRIDES=()
+
 if [[ -n "$REGION" ]]; then
-    ARGUMENT_REGION="--region $REGION"
+    ARGUMENT_REGION=("--region" "$REGION")
 fi
 
 if [[ -n "$AWS_PROFILE" ]]; then
-    ARGUMENT_PROFILE="--profile $AWS_PROFILE"
+    ARGUMENT_PROFILE=("--profile" "$AWS_PROFILE")
 fi
 
 if [[ -f "$PARAMETER_FILE" ]]; then
-    ARGUMENT_PARAMETER_OVERRIDES="--parameter-overrides file://$PARAMETER_FILE"
+    ARGUMENT_PARAMETER_OVERRIDES=("--parameter-overrides" "file://$PARAMETER_FILE")
 fi
 
 # ==============================================================================
@@ -133,7 +137,7 @@ validate_aws_profile() {
 
     cmd_get_caller_identity=(
         "aws" "sts" "get-caller-identity"
-        "$ARGUMENT_PROFILE"
+        "${ARGUMENT_PROFILE[@]}"
     )
 
     if ! "${cmd_get_caller_identity[@]}" &>/dev/null; then
@@ -153,8 +157,8 @@ validate_template() {
     cmd_validate_template=(
         "aws" "cloudformation" "validate-template"
         "--template-body" "file://$TEMPLATE_FILE"
-        "$ARGUMENT_PROFILE"
-        "$ARGUMENT_REGION"
+        "${ARGUMENT_PROFILE[@]}"
+        "${ARGUMENT_REGION[@]}"
     )
 
     if ! "${cmd_validate_template[@]}" &>/dev/null; then
@@ -173,8 +177,8 @@ show_planned_deployment() {
         "--template-body" "file://$TEMPLATE_FILE"
         "--query" "ResourceIdentifierSummaries[*]"
         "--output" "json"
-        "$ARGUMENT_PROFILE"
-        "$ARGUMENT_REGION"
+        "${ARGUMENT_PROFILE[@]}"
+        "${ARGUMENT_REGION[@]}"
     )
 
     planned_deployment_resources=$(
@@ -199,9 +203,9 @@ deploy_template() {
         "aws" "cloudformation" "deploy"
         "--template-file" "$TEMPLATE_FILE"
         "--stack-name" "$STACK_NAME"
-        "$ARGUMENT_PROFILE"
-        "$ARGUMENT_REGION"
-        "$ARGUMENT_PARAMETER_OVERRIDES"
+        "${ARGUMENT_PROFILE[@]}"
+        "${ARGUMENT_REGION[@]}"
+        "${ARGUMENT_PARAMETER_OVERRIDES[@]}"
     )
 
     if [[ $DRY_RUN -eq 1 ]]; then
@@ -220,8 +224,8 @@ deploy_template() {
             "aws" "cloudformation" "describe-stack-events"
             "--stack-name" "$STACK_NAME"
             "--query" "StackEvents[?ResourceStatus==\`CREATE_FAILED\` || ResourceStatus==\`UPDATE_FAILED\` || ResourceStatus==\`ROLLBACK_IN_PROGRESS\`].[Timestamp, LogicalResourceId, ResourceStatusReason]"
-            "$ARGUMENT_PROFILE"
-            "$ARGUMENT_REGION"
+            "${ARGUMENT_PROFILE[@]}"
+            "${ARGUMENT_REGION[@]}"
         )
 
         "${cmd_describe_failures_in_deployed_cfn[@]}"
