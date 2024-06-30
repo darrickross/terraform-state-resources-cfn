@@ -106,5 +106,65 @@ check_for_required_packages() {
     fi
 }
 
+validate_aws_profile() {
+    echo "Checking AWS profile..."
+    if ! aws sts get-caller-identity --profile "$AWS_PROFILE" &>/dev/null; then
+        echo "AWS profile '$AWS_PROFILE' failed, check profile"
+        exit 1
+    fi
+    echo "AWS profile is valid."
+}
+
+validate_template() {
+    echo "Validating CloudFormation template..."
+    aws cloudformation validate-template --template-body file://"$TEMPLATE_FILE" --profile "$AWS_PROFILE" --region "$REGION"
+    if [[ $? -ne 0 ]]; then
+        echo "Template validation failed."
+        exit 1
+    fi
+    echo "Template is valid."
+}
+
+show_parameters() {
+    echo "The following template and parameters have been selected for deployment"
+    PARAMS=$(
+        aws cloudformation get-template-summary \
+            --template-body file://"$TEMPLATE_FILE" \
+            --profile "$AWS_PROFILE" \
+            --region "$REGION"
+    )
+    echo "$PARAMS"
+}
+
+gain_approval() {
+    if [[ $ASSUME_YES -eq 1 ]]; then
+        return
+    fi
+    read -rp "Do you want to proceed with deployment? (y/Y): " APPROVAL
+    if [[ "$APPROVAL" != [yY] ]]; then
+        echo "Deployment aborted."
+        exit 0
+    fi
+}
+
+deploy_template() {
+    if [[ $DRY_RUN -eq 1 ]]; then
+        echo "Dry run mode enabled. Skipping deployment."
+        exit 0
+    fi
+    echo "Deploying CloudFormation template..."
+    aws cloudformation deploy --template-file "$TEMPLATE_FILE" --stack-name "$TEMPLATE_NAME" --profile "$AWS_PROFILE" --region "$REGION" --parameter-overrides file://"$PARAMETER_FILE" --capabilities CAPABILITY_NAMED_IAM
+    if [[ $? -ne 0 ]]; then
+        echo "Deployment failed."
+        exit 1
+    fi
+    echo "Deployment successful."
+}
+
 # Main script execution
 check_for_required_packages
+validate_aws_profile
+validate_template
+show_parameters
+gain_approval
+deploy_template
