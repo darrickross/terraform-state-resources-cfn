@@ -30,6 +30,7 @@ Parameters:
 
 Ensure the required tools are installed and configured:
 - AWS CLI: https://aws.amazon.com/cli/
+- jq: https://stedolan.github.io/jq/
 
 HEREDOC_FULL_USAGE
 }
@@ -117,6 +118,12 @@ check_for_required_packages() {
         echo "Install from: https://aws.amazon.com/cli/"
         exit 1
     fi
+
+    if ! which jq &>/dev/null; then
+        echo "Current environment missing 'jq'"
+        echo "Install from: https://stedolan.github.io/jq/"
+        exit 1
+    fi
 }
 
 validate_aws_profile() {
@@ -138,13 +145,14 @@ validate_template() {
     echo "Template is valid."
 }
 
-show_parameters() {
-    echo "The following template and parameters have been selected for deployment"
+show_planned_deployment() {
+    echo "The following resources are prepared for deployment"
     PARAMS=$(
         aws cloudformation get-template-summary \
             --template-body file://"$TEMPLATE_FILE" \
             --profile "$AWS_PROFILE" \
-            --region "$REGION"
+            --region "$REGION" |
+            jq -r '.ResourceIdentifierSummaries[]'
     )
     echo "$PARAMS"
 }
@@ -181,6 +189,6 @@ deploy_template() {
 check_for_required_packages
 validate_aws_profile
 validate_template
-show_parameters
+show_planned_deployment
 gain_approval
 deploy_template
