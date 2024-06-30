@@ -167,6 +167,9 @@ validate_template() {
 
     if ! "${cmd_validate_template[@]}" &>/dev/null; then
         echo "Template validation failed."
+
+        # Show why the template failed
+        "${cmd_validate_template[@]}"
         exit 1
     fi
 
