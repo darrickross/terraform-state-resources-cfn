@@ -5,10 +5,10 @@
 show_full_usage() {
     cat <<HEREDOC_FULL_USAGE
 This script automates the deployment of AWS CloudFormation templates by performing the following steps:
-1. Validate the CloudFormation template
-2. Show the user what parameters are used
-3. Gain approval from the user to proceed
-4. Deploy the CloudFormation template
+    1. Validate the CloudFormation template
+    2. Show the user what parameters are used
+    3. Gain approval from the user to proceed
+    4. Deploy the CloudFormation template
 
 Usage:
     $0 --template TEMPLATE [-p|--profile AWS_PROFILE] [-r|--region REGION]
@@ -26,8 +26,8 @@ Parameters:
         -y, --assume-yes            : Automatically proceed without prompting for approval
 
 Ensure the required tools are installed and configured:
-- AWS CLI: https://aws.amazon.com/cli/
-- jq: https://stedolan.github.io/jq/
+    - AWS CLI: https://aws.amazon.com/cli/
+    - jq: https://stedolan.github.io/jq/
 
 HEREDOC_FULL_USAGE
 }
