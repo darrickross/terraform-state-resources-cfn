@@ -102,6 +102,8 @@ fi
 
 if [[ ! -f "$PARAMETER_FILE" ]]; then
     echo "Parameter file does not exist: $PARAMETER_FILE"
+    echo "Ensure a blank json is used for no parameter override."
+    # TODO make the parameter file optional, where the below command doesnt use it if the file doesnt exist
     exit 1
 fi
 
