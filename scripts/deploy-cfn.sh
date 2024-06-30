@@ -209,7 +209,18 @@ deploy_template() {
     echo "Deploying CloudFormation template..."
 
     if ! "${cmd_deploy_cfn[@]}"; then
-        echo "Deployment failed."
+        echo "Deployment failed. Fetching stack events..."
+
+        cmd_describe_failures_in_deployed_cfn=(
+            "aws" "cloudformation" "describe-stack-events"
+            "--stack-name" "$STACK_NAME"
+            "--profile" "$AWS_PROFILE"
+            "--region" "$REGION"
+            "--query" "StackEvents[?ResourceStatus==\`CREATE_FAILED\` || ResourceStatus==\`UPDATE_FAILED\`].[Timestamp, LogicalResourceId, ResourceStatusReason]"
+        )
+
+        "${cmd_describe_failures_in_deployed_cfn[@]}"
+
         exit 1
     fi
     echo "Deployment successful."
