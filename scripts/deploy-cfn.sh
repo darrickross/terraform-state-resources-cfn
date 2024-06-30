@@ -79,11 +79,7 @@ done
 #   Validate input
 # ==============================================================================
 
-if [[ -z "$AWS_PROFILE" ]]; then
-    echo "Missing AWS Profile!"
-    show_usage
-    exit 1
-elif [[ -z "$TEMPLATE_NAME" ]]; then
+if [[ -z "$TEMPLATE_NAME" ]]; then
     echo "Missing CloudFormation Template file!"
     show_usage
     exit 1
