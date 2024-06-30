@@ -30,7 +30,28 @@ show_usage() {
 
 show_full_usage() {
     cat <<HEREDOC_FULL_USAGE
-TODO
+This script automates the deployment of AWS CloudFormation templates.
+It performs the following steps:
+1. Validate the CloudFormation template
+2. Show the user what parameters are used
+3. Gain approval from the user to proceed
+4. Deploy the CloudFormation template
+
+Usage:
+./deploy-cfn.sh -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run]
+
+Parameters:
+    Required:
+        -p|--profile    : The AWS profile to use
+        -t|--template   : The name of the CloudFormation template (without extension) located in ./cfn/templates/
+    Optional:
+        -d|--dry-run    : Perform a dry run without actual deployment
+        -h|--help       : Show usage
+        -r|--region     : The AWS region to deploy the stack in (default: us-east-1)
+        -y|--assume-yes : Automatically proceed without prompting for approval
+
+Ensure the required tools are installed and configured:
+- AWS CLI: https://aws.amazon.com/cli/
 HEREDOC_FULL_USAGE
 }
 
