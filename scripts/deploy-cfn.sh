@@ -1,29 +1,7 @@
 #!/bin/bash
 
-# This script automates the deployment of AWS CloudFormation templates.
-# It performs the following steps:
-# 1. Validate the CloudFormation template
-# 2. Show the user what parameters are used
-# 3. Gain approval from the user to proceed
-# 4. Deploy the CloudFormation template
+# Below 2 functions capture the necessary overview of what this script does in functionsl help comments
 
-# Usage:
-# ./deploy-cfn.sh -p|--profile AWS_PROFILE -r|--region REGION -t|--template TEMPLATE_NAME [-y|--assume-yes] [-d|--dry-run]
-
-# Parameters:
-#   Required
-#       -p|--profile    : The AWS profile to use
-#       -t|--template   : The name of the CloudFormation template (without extension) located in ./cfn/templates/
-#   Optional
-#       -d|--dry-run    : (Optional) Perform a dry run without actual deployment
-#       -h|--help       : (Optional) Show usage
-#       -r|--region     : (Optional) The AWS region to deploy the stack in
-#       -y|--assume-yes : (Optional) Automatically proceed without prompting for approval
-
-# Ensure the required tools are installed and configured:
-# - AWS CLI: https://aws.amazon.com/cli/
-
-# Function to show script usage
 show_usage() {
     echo "Usage:"
     echo "$0 -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run] [-h|--help]"
