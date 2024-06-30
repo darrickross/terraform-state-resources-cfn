@@ -54,7 +54,9 @@ Resources:
                 "aws:SecureTransport": "false"
           - Sid: "Allow list operation on the bucket"
             Effect: Allow
-            Principal: "*"
+            Principal:
+              AWS:
+                - !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:root"
             Action:
               - "s3:ListBucket"
             Resource:
@@ -62,7 +64,9 @@ Resources:
           # https://developer.hashicorp.com/terraform/language/settings/backends/s3#permissions-required
           - Sid: "Allow put/get operation on things in the bucket"
             Effect: Allow
-            Principal: "*"
+            Principal:
+              AWS:
+                - !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:root"
             Action:
               - "s3:GetObject"
               - "s3:PutObject"
