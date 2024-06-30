@@ -34,6 +34,10 @@ Ensure the required tools are installed and configured:
 HEREDOC_FULL_USAGE
 }
 
+# ==============================================================================
+#   Parse arguments
+# ==============================================================================
+
 # Default values
 ASSUME_YES=0
 DRY_RUN=0
@@ -74,7 +78,10 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-# Check for mandatory arguments
+# ==============================================================================
+#   Validate input
+# ==============================================================================
+
 if [[ -z "$AWS_PROFILE" ]]; then
     echo "Missing AWS Profile!"
     show_usage
@@ -97,6 +104,10 @@ if [[ ! -f "$PARAMETER_FILE" ]]; then
     echo "Parameter file does not exist: $PARAMETER_FILE"
     exit 1
 fi
+
+# ==============================================================================
+#   Functions
+# ==============================================================================
 
 check_for_required_packages() {
     if ! which aws &>/dev/null; then
@@ -161,7 +172,10 @@ deploy_template() {
     echo "Deployment successful."
 }
 
-# Main script execution
+# ==============================================================================
+# Main
+# ==============================================================================
+
 check_for_required_packages
 validate_aws_profile
 validate_template
