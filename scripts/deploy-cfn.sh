@@ -38,8 +38,7 @@ It performs the following steps:
 3. Gain approval from the user to proceed
 4. Deploy the CloudFormation template
 
-Usage:
-./deploy-cfn.sh -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run]
+$(show_usage)
 
 Parameters:
     Required:
