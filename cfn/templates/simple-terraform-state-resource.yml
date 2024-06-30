@@ -8,7 +8,6 @@ Parameters:
     AllowedValues:
       - Delete
       - Retain
-      - RetainExceptOnCreate
     Description: Specifies the update/replace policy for the state table. Anything but delete will incur extra costs.
   StateTableDeletionPolicy:
     Type: String
