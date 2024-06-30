@@ -1,32 +1,29 @@
 #!/bin/bash
 
-# Below 2 functions capture the necessary overview of what this script does in functionsl help comments
-
-show_usage() {
-    echo "Usage:"
-    echo "$0 -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run] [-h|--help]"
-}
+# The below functions capture the necessary overview of what this script does in functionsl help comments
 
 show_full_usage() {
     cat <<HEREDOC_FULL_USAGE
-This script automates the deployment of AWS CloudFormation templates.
-It performs the following steps:
+This script automates the deployment of AWS CloudFormation templates by performing the following steps:
 1. Validate the CloudFormation template
 2. Show the user what parameters are used
 3. Gain approval from the user to proceed
 4. Deploy the CloudFormation template
 
-$(show_usage)
+Usage:
+    $0 --template TEMPLATE [-p|--profile AWS_PROFILE] [-r|--region REGION]
+        [-d|--dry-run] [-h|--help] [-y|--assume-yes]
 
 Parameters:
     Required:
-        -p|--profile    : The AWS profile to use
-        -t|--template   : The name of the CloudFormation template (without extension) located in ./cfn/templates/
+        -t, --template TEMPLATE     : The name of the CloudFormation template (without extension) located in ./cfn/templates/
+
     Optional:
-        -d|--dry-run    : Perform a dry run without actual deployment
-        -h|--help       : Show usage
-        -r|--region     : The AWS region to deploy the stack in (default: us-east-1)
-        -y|--assume-yes : Automatically proceed without prompting for approval
+        -d, --dry-run               : Perform a dry run without making any changes.
+        -h, --help                  : Display this help message and exit.
+        -p, --profile AWS_PROFILE   : Specify the AWS profile to use.
+        -r, --region REGION         : The AWS region to deploy the stack in
+        -y, --assume-yes            : Automatically proceed without prompting for approval
 
 Ensure the required tools are installed and configured:
 - AWS CLI: https://aws.amazon.com/cli/
@@ -42,7 +39,6 @@ HEREDOC_FULL_USAGE
 # Default values
 ASSUME_YES=0
 DRY_RUN=0
-REGION="us-east-1"
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -102,11 +98,20 @@ if [[ ! -f "$TEMPLATE_FILE" ]]; then
     exit 1
 fi
 
-if [[ ! -f "$PARAMETER_FILE" ]]; then
-    echo "Parameter file does not exist: $PARAMETER_FILE"
-    echo "Ensure a blank json is used for no parameter override."
-    # TODO make the parameter file optional, where the below command doesnt use it if the file doesnt exist
-    exit 1
+# ==============================================================================
+#   Variables
+# ==============================================================================
+
+if [[ -n "$REGION" ]]; then
+    ARGUMENT_REGION="--region $REGION"
+fi
+
+if [[ -n "$AWS_PROFILE" ]]; then
+    ARGUMENT_PROFILE="--profile $AWS_PROFILE"
+fi
+
+if [[ -f "$PARAMETER_FILE" ]]; then
+    ARGUMENT_PARAMETER_OVERRIDES="--parameter-overrides file://$PARAMETER_FILE"
 fi
 
 # ==============================================================================
@@ -132,11 +137,15 @@ validate_aws_profile() {
 
     cmd_get_caller_identity=(
         "aws" "sts" "get-caller-identity"
-        "--profile" "$AWS_PROFILE"
+        "$ARGUMENT_PROFILE"
     )
 
     if ! "${cmd_get_caller_identity[@]}" &>/dev/null; then
-        echo "AWS profile '$AWS_PROFILE' failed, check profile"
+        if [[ -n "$AWS_PROFILE" ]]; then
+            echo "AWS profile '$AWS_PROFILE' failed, check profile"
+        else
+            echo "Failured to authenticate to AWS. Check your AWS credentials, or use the --profile flag to specify a profile."
+        fi
         exit 1
     fi
     echo "AWS profile is valid."
@@ -148,8 +157,8 @@ validate_template() {
     cmd_validate_template=(
         "aws" "cloudformation" "validate-template"
         "--template-body" "file://$TEMPLATE_FILE"
-        "--profile" "$AWS_PROFILE"
-        "--region" "$REGION"
+        "$ARGUMENT_PROFILE"
+        "$ARGUMENT_REGION"
     )
 
     if ! "${cmd_validate_template[@]}" &>/dev/null; then
@@ -166,10 +175,10 @@ show_planned_deployment() {
     cmd_get_template_summary=(
         "aws" "cloudformation" "get-template-summary"
         "--template-body" "file://$TEMPLATE_FILE"
-        "--profile" "$AWS_PROFILE"
-        "--region" "$REGION"
         "--query" "ResourceIdentifierSummaries[*]"
         "--output" "json"
+        "$ARGUMENT_PROFILE"
+        "$ARGUMENT_REGION"
     )
 
     planned_deployment_resources=$(
@@ -194,9 +203,9 @@ deploy_template() {
         "aws" "cloudformation" "deploy"
         "--template-file" "$TEMPLATE_FILE"
         "--stack-name" "$STACK_NAME"
-        "--profile" "$AWS_PROFILE"
-        "--region" "$REGION"
-        "--parameter-overrides" "file://$PARAMETER_FILE"
+        "$ARGUMENT_PROFILE"
+        "$ARGUMENT_REGION"
+        "$ARGUMENT_PARAMETER_OVERRIDES"
     )
 
     if [[ $DRY_RUN -eq 1 ]]; then
@@ -214,9 +223,9 @@ deploy_template() {
         cmd_describe_failures_in_deployed_cfn=(
             "aws" "cloudformation" "describe-stack-events"
             "--stack-name" "$STACK_NAME"
-            "--profile" "$AWS_PROFILE"
-            "--region" "$REGION"
             "--query" "StackEvents[?ResourceStatus==\`CREATE_FAILED\` || ResourceStatus==\`UPDATE_FAILED\` || ResourceStatus==\`ROLLBACK_IN_PROGRESS\`].[Timestamp, LogicalResourceId, ResourceStatusReason]"
+            "$ARGUMENT_PROFILE"
+            "$ARGUMENT_REGION"
         )
 
         "${cmd_describe_failures_in_deployed_cfn[@]}"
