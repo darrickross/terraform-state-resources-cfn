@@ -141,10 +141,14 @@ validate_aws_profile() {
     )
 
     if ! "${cmd_get_caller_identity[@]}" &>/dev/null; then
+        echo "Failured to authenticate to AWS."
+        echo "CMD: ${cmd_get_caller_identity[*]}"
+        echo ""
+
         if [[ -n "$AWS_PROFILE" ]]; then
-            echo "AWS profile '$AWS_PROFILE' failed, check profile"
+            echo "AWS profile '$AWS_PROFILE' failed, check profile credentials."
         else
-            echo "Failured to authenticate to AWS. Check your AWS credentials, or use the --profile flag to specify a profile."
+            echo "Check your default AWS credentials, or use the --profile flag to specify a profile."
         fi
         exit 1
     fi
