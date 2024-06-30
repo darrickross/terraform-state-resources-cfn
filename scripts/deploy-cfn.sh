@@ -53,6 +53,7 @@ Parameters:
 
 Ensure the required tools are installed and configured:
 - AWS CLI: https://aws.amazon.com/cli/
+
 HEREDOC_FULL_USAGE
 }
 
