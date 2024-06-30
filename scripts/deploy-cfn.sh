@@ -128,7 +128,13 @@ check_for_required_packages() {
 
 validate_aws_profile() {
     echo "Checking AWS profile..."
-    if ! aws sts get-caller-identity --profile "$AWS_PROFILE" &>/dev/null; then
+
+    cmd_get_caller_identity=(
+        "aws" "sts" "get-caller-identity"
+        "--profile" "$AWS_PROFILE"
+    )
+
+    if ! "${cmd_get_caller_identity[@]}" &>/dev/null; then
         echo "AWS profile '$AWS_PROFILE' failed, check profile"
         exit 1
     fi
@@ -137,24 +143,38 @@ validate_aws_profile() {
 
 validate_template() {
     echo "Validating CloudFormation template..."
-    aws cloudformation validate-template --template-body file://"$TEMPLATE_FILE" --profile "$AWS_PROFILE" --region "$REGION" &>/dev/null
-    if [[ $? -ne 0 ]]; then
+
+    cmd_validate_template=(
+        "aws" "cloudformation" "validate-template"
+        "--template-body" "file://$TEMPLATE_FILE"
+        "--profile" "$AWS_PROFILE"
+        "--region" "$REGION"
+    )
+
+    if ! "${cmd_validate_template[@]}" &>/dev/null; then
         echo "Template validation failed."
         exit 1
     fi
+
     echo "Template is valid."
 }
 
 show_planned_deployment() {
     echo "The following resources are prepared for deployment"
-    PARAMS=$(
-        aws cloudformation get-template-summary \
-            --template-body file://"$TEMPLATE_FILE" \
-            --profile "$AWS_PROFILE" \
-            --region "$REGION" |
-            jq -r '.ResourceIdentifierSummaries[]'
+
+    cmd_get_template_summary=(
+        "aws" "cloudformation" "get-template-summary"
+        "--template-body" "file://$TEMPLATE_FILE"
+        "--profile" "$AWS_PROFILE"
+        "--region" "$REGION"
+        "--query" "ResourceIdentifierSummaries[*]"
+        "--output" "json"
     )
-    echo "$PARAMS"
+
+    planned_deployment_resources=$(
+        "${cmd_get_template_summary[@]}"
+    )
+    echo "$planned_deployment_resources"
 }
 
 gain_approval() {
@@ -169,13 +189,25 @@ gain_approval() {
 }
 
 deploy_template() {
+    cmd_deploy_cfn=(
+        "aws" "cloudformation" "deploy"
+        "--template-file" "$TEMPLATE_FILE"
+        "--stack-name" "$TEMPLATE_NAME"
+        "--profile" "$AWS_PROFILE"
+        "--region" "$REGION"
+        "--parameter-overrides" "file://$PARAMETER_FILE"
+    )
+
     if [[ $DRY_RUN -eq 1 ]]; then
         echo "Dry run mode enabled. Skipping deployment."
+        echo "Would have ran:"
+        echo "${cmd_deploy_cfn[@]}"
         exit 0
     fi
+
     echo "Deploying CloudFormation template..."
-    aws cloudformation deploy --template-file "$TEMPLATE_FILE" --stack-name "$TEMPLATE_NAME" --profile "$AWS_PROFILE" --region "$REGION" --parameter-overrides file://"$PARAMETER_FILE" --capabilities CAPABILITY_NAMED_IAM
-    if [[ $? -ne 0 ]]; then
+
+    if ! "${cmd_deploy_cfn[@]}"; then
         echo "Deployment failed."
         exit 1
     fi
