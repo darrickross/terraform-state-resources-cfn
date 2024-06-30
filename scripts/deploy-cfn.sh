@@ -216,7 +216,7 @@ deploy_template() {
             "--stack-name" "$STACK_NAME"
             "--profile" "$AWS_PROFILE"
             "--region" "$REGION"
-            "--query" "StackEvents[?ResourceStatus==\`CREATE_FAILED\` || ResourceStatus==\`UPDATE_FAILED\`].[Timestamp, LogicalResourceId, ResourceStatusReason]"
+            "--query" "StackEvents[?ResourceStatus==\`CREATE_FAILED\` || ResourceStatus==\`UPDATE_FAILED\` || ResourceStatus==\`ROLLBACK_IN_PROGRESS\`].[Timestamp, LogicalResourceId, ResourceStatusReason]"
         )
 
         "${cmd_describe_failures_in_deployed_cfn[@]}"
