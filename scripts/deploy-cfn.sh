@@ -20,6 +20,9 @@
 #       -r|--region     : (Optional) The AWS region to deploy the stack in
 #       -y|--assume-yes : (Optional) Automatically proceed without prompting for approval
 
+# Ensure the required tools are installed and configured:
+# - AWS CLI: https://aws.amazon.com/cli/
+
 # Function to show script usage
 show_usage() {
     echo "Usage: $0 -p|--profile AWS_PROFILE -t|--template TEMPLATE_NAME [-r|--region REGION] [-y|--assume-yes] [-d|--dry-run] [-h/--help]"
@@ -94,3 +97,14 @@ if [[ ! -f "$PARAMETER_FILE" ]]; then
     echo "Parameter file does not exist: $PARAMETER_FILE"
     exit 1
 fi
+
+check_for_required_packages() {
+    if ! which aws &>/dev/null; then
+        echo "Current environment missing 'awscli'"
+        echo "Install from: https://aws.amazon.com/cli/"
+        exit 1
+    fi
+}
+
+# Main script execution
+check_for_required_packages
