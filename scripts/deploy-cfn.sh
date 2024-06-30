@@ -153,7 +153,7 @@ gain_approval() {
     if [[ $ASSUME_YES -eq 1 ]]; then
         return
     fi
-    read -rp "Do you want to proceed with deployment? (y/Y): " APPROVAL
+    read -rp "Do you want to proceed with deployment? (Y/N): " APPROVAL
     if [[ "$APPROVAL" != [yY] ]]; then
         echo "Deployment aborted."
         exit 0
