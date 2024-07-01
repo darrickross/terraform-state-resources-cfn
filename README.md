@@ -30,6 +30,17 @@ Ensure the following AWS permissions are granted for the profile or IAM role bei
 - `s3:PutBucketVersioning`
 - `s3:PutBucketPublicAccessBlock`
 
+#### AWS Price estimate
+
+A naive AWS estimate calculation is as follows:
+
+[Example AWS price estimate](https://calculator.aws/#/estimate?id=e31394ddaf337e1896ceabe36fa234d3045db44e)
+
+Which comes out to be an upper bound of `$0.83/month`, or `$9.96/year`.
+
+> [!NOTE]
+This estimate is however very flawed as it makes upper bounds assumptions on the amount of data stored, and how frequent its accessed. Most calculation variables assume a minimum of `1 GB` of data stored, written, or read. This is however going to be much larger than what a small Terraform state management system will use, making this a highly rounded up calculation.
+
 ## Usage
 
 To deploy the CloudFormation template, follow these steps:
