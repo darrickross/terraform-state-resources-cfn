@@ -27,7 +27,6 @@ Parameters:
 
 Ensure the required tools are installed and configured:
     - AWS CLI: https://aws.amazon.com/cli/
-    - jq: https://stedolan.github.io/jq/
 
 HEREDOC_FULL_USAGE
 }
@@ -122,12 +121,6 @@ check_for_required_packages() {
     if ! which aws &>/dev/null; then
         echo "Current environment missing 'awscli'"
         echo "Install from: https://aws.amazon.com/cli/"
-        exit 1
-    fi
-
-    if ! which jq &>/dev/null; then
-        echo "Current environment missing 'jq'"
-        echo "Install from: https://stedolan.github.io/jq/"
         exit 1
     fi
 }
