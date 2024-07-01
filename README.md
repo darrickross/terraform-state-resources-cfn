@@ -147,4 +147,7 @@ Deploy the stack with the specified template and use an AWS CLI Profile and a sp
 
 The inclusion of a corresponding `.json` file in the `./cfn/parameters/` directory, named the same as a template, will be assumed to be a parameter override file to use when deploying.
 
+>[!TIP]
+> A lack of a corresponding `.json` just means no parameter override will be used. Make sure the template includes defaults for the parameters.
+
 For example, if you have a template named `simple-terraform-state-resource.yml`, you should include a file named `simple-terraform-state-resource.json` in the parameters directory. This `.json` file will be used to override the default parameters specified in the CloudFormation template during deployment.
